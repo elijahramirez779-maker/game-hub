@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snake</title>
+  <style>
+    body {
+      background: #0b1020;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    canvas {
+      background: #121a2e;
+      border: 3px solid #6d7cff;
+      margin-top: 20px;
+    }
+
+    a {
+      color: #9da8ff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🐍 Snake</h1>
+  <p>Use the arrow keys to move.</p>
+
+  <canvas id="game" width="400" height="400"></canvas>
+
+  <p>
+    <a href="../../index.html">← Back to GameHub</a>
+  </p>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    const size = 20;
+
+    let snake = [
+      { x: 200, y: 200 }
+    ];
+
+    let dx = size;
+    let dy = 0;
+
+    let food = {
+      x: 100,
+      y: 100
+    };
+
+    document.addEventListener("keydown", function(event) {
+
+      if (event.key === "ArrowUp" && dy === 0) {
+        dx = 0;
+        dy = -size;
+      }
+
+      if (event.key === "ArrowDown" && dy === 0) {
+        dx = 0;
+        dy = size;
+      }
+
+      if (event.key === "ArrowLeft" && dx === 0) {
+        dx = -size;
+        dy = 0;
+      }
+
+      if (event.key === "ArrowRight" && dx === 0) {
+        dx = size;
+        dy = 0;
+      }
+
+    });
+
+    function gameLoop() {
+
+      let head = {
+        x: snake[0].x + dx,
+        y: snake[0].y + dy
+      };
+
+      if (
+        head.x < 0 ||
+        head.y < 0 ||
+        head.x >= canvas.width ||
+        head.y >= canvas.height
+      ) {
+        snake = [{ x: 200, y: 200 }];
+        dx = size;
+        dy = 0;
+        return;
+      }
+
+      snake.unshift(head);
+
+      if (head.x === food.x && head.y === food.y) {
+
+        food = {
+          x: Math.floor(Math.random() * 20) * size,
+          y: Math.floor(Math.random() * 20) * size
+        };
+
+      } else {
+        snake.pop();
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#6d7cff";
+
+      snake.forEach(function(part) {
+        ctx.fillRect(
+          part.x,
+          part.y,
+          size - 2,
+          size - 2
+        );
+      });
+
+      ctx.fillStyle = "#ff6d8a";
+
+      ctx.fillRect(
+        food.x,
+        food.y,
+        size - 2,
+        size - 2
+      );
+    }
+
+    setInterval(gameLoop, 100);
+  </script>
+
+</body>
+</html>
